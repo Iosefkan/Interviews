@@ -1,0 +1,122 @@
+version: '3.8'
+
+services:
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: hr-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - hr-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: hr-mongodb
+    restart: unless-stopped
+    env_file: ./main.env
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./backend/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - hr-network
+
+  # Backend Service (Node.js + Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hr-backend
+    restart: unless-stopped
+    env_file: ./main.env
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/reports:/app/reports
+    depends_on:
+      - mongodb
+      - redis
+      - tts-service
+      - stt-service
+    networks:
+      - hr-network
+
+  # TTS Service (Python + FastAPI + XTTSv2)
+  tts-service:
+    build:
+      context: ./tts-service
+      dockerfile: Dockerfile
+    container_name: hr-tts
+    restart: unless-stopped
+    env_file: ./tts.env
+    environment:
+      PYTHONPATH: /app
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./tts-service/audio:/app/audio
+      - ./tts-service/models:/app/models
+    networks:
+      - hr-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # STT Service (Python + FastAPI + Whisper)
+  stt-service:
+    build:
+      context: ./stt-service
+      dockerfile: Dockerfile
+    container_name: hr-stt
+    restart: unless-stopped
+    env_file: ./stt.env
+    environment:
+      PYTHONPATH: /app
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./stt-service/temp:/app/temp
+      - ./stt-service/models:/app/models
+    networks:
+      - hr-network
+
+  # Frontend (Vite + React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hr-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - hr-network
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  hr-network:
+    driver: bridge
