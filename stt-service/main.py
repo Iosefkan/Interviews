@@ -48,7 +48,7 @@ os.makedirs(TEMP_AUDIO_DIR, exist_ok=True)
 # Pydantic models
 class TranscriptionRequest(BaseModel):
     language: Optional[str] = Field(default="auto", description="Language code (e.g., 'en', 'auto')")
-    model_size: Optional[str] = Field(default="base", regex="^(tiny|base|small|medium|large)$")
+    model_size: Optional[str] = Field(default="base", pattern="^(tiny|base|small|medium|large)$")
 
 class TranscriptionSegment(BaseModel):
     text: str

@@ -101,8 +101,8 @@ const Interview: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-700">Started</p>
                   <p className="text-gray-600">
-                    {sessionQuery.data?.createdAt ? 
-                      new Date(sessionQuery.data.createdAt).toLocaleString() : 
+                    {sessionQuery.data?.startTime ? 
+                      new Date(sessionQuery.data.startTime).toLocaleString() : 
                       'Not started'
                     }
                   </p>

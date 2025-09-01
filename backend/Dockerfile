@@ -1,11 +1,11 @@
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Set working directory
 WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm install --only=production --verbose
 
 # Copy application code
 COPY src/ ./src/
@@ -13,6 +13,7 @@ COPY init-mongo.js ./
 
 # Create necessary directories
 RUN mkdir -p uploads reports temp
+RUN mkdir ./test ./test/data && touch ./test/data/05-versions-space.pdf
 
 # Expose port
 EXPOSE 3000

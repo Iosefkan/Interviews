@@ -56,7 +56,9 @@ class OpenRouterService {
       },
       "aiNotes": "detailed analysis of candidate qualifications",
       "matchingCriteria": [{"criterion": "requirement", "met": boolean, "evidence": "explanation"}]
-    }`;
+    }
+    
+    Do not wrap the answer in triple quotes, return just the JSON`;
 
     const userPrompt = `
     Job Title: ${jobTitle}

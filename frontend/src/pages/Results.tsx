@@ -91,13 +91,13 @@ const Results: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-green-500 mb-2">
-                    {session.questions?.length || 0}
+                    {session.transcript?.length || 0}
                   </div>
-                  <p className="text-gray-600">Questions Answered</p>
+                  <p className="text-gray-600">Messages Exchanged</p>
                 </div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-500 mb-2">
-                    {session.duration || '0'} min
+                    {session.duration ? Math.round(session.duration / 60) : '0'} min
                   </div>
                   <p className="text-gray-600">Duration</p>
                 </div>
@@ -132,14 +132,14 @@ const Results: React.FC = () => {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Started:</span>
                     <span className="font-medium">
-                      {new Date(session.createdAt).toLocaleDateString()}
+                      {new Date(session.startTime).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Completed:</span>
                     <span className="font-medium">
-                      {session.completedAt ? 
-                        new Date(session.completedAt).toLocaleDateString() : 
+                      {session.endTime ? 
+                        new Date(session.endTime).toLocaleDateString() : 
                         'In Progress'
                       }
                     </span>
@@ -160,28 +160,37 @@ const Results: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <span className="text-sm text-gray-600">Technical Skills</span>
-                      <span className="text-sm font-medium">85%</span>
+                      <span className="text-sm font-medium">
+                        {session.skillsAssessment?.technical?.length ? 
+                          Math.round(session.skillsAssessment.technical.reduce((acc, skill) => acc + skill.score, 0) / session.skillsAssessment.technical.length * 10) + '%' : 
+                          'N/A'
+                        }
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-blue-500 h-2 rounded-full" style={{ width: '85%' }}></div>
+                      <div className="bg-blue-500 h-2 rounded-full" style={{ 
+                        width: session.skillsAssessment?.technical?.length ? 
+                          Math.round(session.skillsAssessment.technical.reduce((acc, skill) => acc + skill.score, 0) / session.skillsAssessment.technical.length * 10) + '%' : 
+                          '0%'
+                      }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="flex justify-between mb-1">
                       <span className="text-sm text-gray-600">Communication</span>
-                      <span className="text-sm font-medium">78%</span>
+                      <span className="text-sm font-medium">
+                        {session.skillsAssessment?.communication ? 
+                          Math.round(session.skillsAssessment.communication * 10) + '%' : 
+                          'N/A'
+                        }
+                      </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-green-500 h-2 rounded-full" style={{ width: '78%' }}></div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm text-gray-600">Problem Solving</span>
-                      <span className="text-sm font-medium">90%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: '90%' }}></div>
+                      <div className="bg-green-500 h-2 rounded-full" style={{ 
+                        width: session.skillsAssessment?.communication ? 
+                          Math.round(session.skillsAssessment.communication * 10) + '%' : 
+                          '0%'
+                      }}></div>
                     </div>
                   </div>
                 </div>
@@ -196,27 +205,28 @@ const Results: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {session.questions?.length ? (
-                  session.questions.map((qa: {question: string; answer?: string; score?: number;}, index: number) => (
-                    <div key={index} className="border-l-4 border-primary-500 pl-4 py-2">
-                      <p className="font-medium text-gray-900 mb-2">
-                        Q{index + 1}: {qa.question}
+                {session.transcript?.length ? (
+                  session.transcript.map((message, index) => (
+                    <div key={index} className={`border-l-4 pl-4 py-2 ${
+                      message.speaker === 'ai' ? 'border-blue-500 bg-blue-50' : 'border-green-500 bg-green-50'
+                    }`}>
+                      <p className="font-medium text-gray-900 mb-1">
+                        {message.speaker === 'ai' ? 'Interviewer' : 'Candidate'}: 
                       </p>
                       <p className="text-gray-700">
-                        A: {qa.answer || 'No answer recorded'}
+                        {message.content}
                       </p>
-                      {qa.score && (
-                        <div className="mt-2">
-                          <Chip variant="primary" size="sm">
-                            Score: {qa.score}/10
-                          </Chip>
-                        </div>
-                      )}
+                      <div className="mt-2 text-xs text-gray-500">
+                        {new Date(message.timestamp).toLocaleTimeString()}
+                        {message.confidence && (
+                          <span className="ml-2">Confidence: {Math.round(message.confidence * 100)}%</span>
+                        )}
+                      </div>
                     </div>
                   ))
                 ) : (
                   <p className="text-gray-500 text-center py-8">
-                    No questions and answers available
+                    No transcript available
                   </p>
                 )}
               </div>

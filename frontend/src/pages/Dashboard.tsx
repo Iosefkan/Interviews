@@ -23,28 +23,28 @@ const Dashboard: React.FC = () => {
   const statsData = [
     {
       title: 'Total Candidates',
-      value: candidatesQuery.data?.total || 0,
+      value: candidatesQuery.data?.pagination?.total || 0,
       icon: UserGroupIcon,
       color: 'text-blue-600',
       bgColor: 'bg-blue-100'
     },
     {
       title: 'Active Interviews',
-      value: interviewsQuery.data?.items?.filter((i: InterviewSession) => i.status === 'active').length || 0,
+      value: interviewsQuery.data?.sessions?.filter((i: InterviewSession) => i.status === 'active').length || 0,
       icon: MicrophoneIcon,
       color: 'text-green-600',
       bgColor: 'bg-green-100'
     },
     {
       title: 'Completed Interviews',
-      value: interviewsQuery.data?.items?.filter((i: InterviewSession) => i.status === 'completed').length || 0,
+      value: interviewsQuery.data?.sessions?.filter((i: InterviewSession) => i.status === 'completed').length || 0,
       icon: CheckCircleIcon,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100'
     },
     {
-      title: 'Pending Reviews',
-      value: interviewsQuery.data?.items?.filter((i: InterviewSession) => i.status === 'pending').length || 0,
+      title: 'Terminated Interviews',
+      value: interviewsQuery.data?.sessions?.filter((i: InterviewSession) => i.status === 'terminated').length || 0,
       icon: ClockIcon,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100'
@@ -106,9 +106,9 @@ const Dashboard: React.FC = () => {
           <CardContent>
             {candidatesQuery.isLoading ? (
               <TableSkeleton rows={3} />
-            ) : candidatesQuery.data?.items?.length ? (
+            ) : candidatesQuery.data?.candidates?.length ? (
               <div className="space-y-3">
-                {candidatesQuery.data.items.slice(0, 5).map((candidate: Candidate) => (
+                {candidatesQuery.data.candidates.slice(0, 5).map((candidate: Candidate) => (
                   <div key={candidate._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{candidate.personalInfo.name}</p>
@@ -137,9 +137,9 @@ const Dashboard: React.FC = () => {
           <CardContent>
             {interviewsQuery.isLoading ? (
               <TableSkeleton rows={3} />
-            ) : interviewsQuery.data?.items?.length ? (
+            ) : interviewsQuery.data?.sessions?.length ? (
               <div className="space-y-3">
-                {interviewsQuery.data.items.slice(0, 5).map((interview: InterviewSession) => (
+                {interviewsQuery.data.sessions.slice(0, 5).map((interview: InterviewSession) => (
                   <div key={interview._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{interview.candidateId}</p>

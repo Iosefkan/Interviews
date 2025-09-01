@@ -56,12 +56,12 @@ app.mount("/audio", StaticFiles(directory=AUDIO_OUTPUT_DIR), name="audio")
 class VoiceSettings(BaseModel):
     speaker: Optional[str] = "default"
     speed: Optional[float] = Field(default=1.0, ge=0.5, le=2.0)
-    emotion: Optional[str] = Field(default="neutral", regex="^(neutral|professional|friendly|excited)$")
+    emotion: Optional[str] = Field(default="neutral", pattern="^(neutral|professional|friendly|excited)$")
 
 class TTSRequest(BaseModel):
     text: str = Field(..., max_length=MAX_TEXT_LENGTH)
     voice_settings: Optional[VoiceSettings] = VoiceSettings()
-    audio_format: Optional[str] = Field(default="wav", regex="^(wav|mp3)$")
+    audio_format: Optional[str] = Field(default="wav", pattern="^(wav|mp3)$")
 
 class TTSResponse(BaseModel):
     audio_url: str
@@ -219,8 +219,7 @@ async def get_voices():
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     """Health check endpoint"""
-    gpu_available = torch.cuda.is_available() if torch.is not None else False
-    
+    gpu_available = torch.cuda.is_available()
     memory_info = None
     if torch is not None and gpu_available:
         try:

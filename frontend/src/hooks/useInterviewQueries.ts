@@ -6,8 +6,9 @@ import {
   type StartInterviewResponse, 
   type ProcessAudioRequest, 
   type ProcessAudioResponse, 
-  type InterviewSession, 
-  type InterviewListResponse 
+  type InterviewListResponse,
+  type InterviewResultsResponse,
+  type ReportResponse
 } from '../types'
 
 export const useInterviewQueries = () => {
@@ -40,7 +41,7 @@ export const useInterviewQueries = () => {
 
   // Get interview session
   const useInterviewSession = (sessionId?: string) => {
-    return useQuery<InterviewSession, Error>({
+    return useQuery<InterviewResultsResponse, Error>({
       queryKey: queryKeys.interview(sessionId!),
       queryFn: () => InterviewService.getResults(sessionId!),
       enabled: !!sessionId,
@@ -76,7 +77,7 @@ export const useInterviewQueries = () => {
   })
 
   // Generate interview report mutation
-  const generateInterviewReport = useMutation<{ reportUrl: string; fileName: string }, Error, string>({
+  const generateInterviewReport = useMutation<ReportResponse, Error, string>({
     mutationFn: InterviewService.generateReport,
     onError: (error) => {
       console.error('Interview report generation failed:', error)

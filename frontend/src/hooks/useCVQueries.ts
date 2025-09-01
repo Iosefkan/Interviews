@@ -5,7 +5,9 @@ import {
   type CVUploadRequest, 
   type CVUploadResponse, 
   type Candidate, 
-  type CandidateListResponse 
+  type CandidateListResponse,
+  type CVAnalysisResponse,
+  type ReportResponse
 } from '../types'
 
 export const useCVQueries = () => {
@@ -36,7 +38,7 @@ export const useCVQueries = () => {
 
   // Get CV analysis
   const useCVAnalysis = (candidateId?: string) => {
-    return useQuery<{ candidate: Candidate }, Error>({
+    return useQuery<CVAnalysisResponse, Error>({
       queryKey: queryKeys.cvAnalysis(candidateId!),
       queryFn: () => CVService.getAnalysis(candidateId!),
       enabled: !!candidateId
@@ -63,7 +65,7 @@ export const useCVQueries = () => {
         if (!old) return old
         return {
           ...old,
-          items: old.items?.map((candidate: Candidate) =>
+          candidates: old.candidates?.map((candidate: Candidate) =>
             candidate._id === candidateId 
               ? { ...candidate, status }
               : candidate
@@ -86,7 +88,7 @@ export const useCVQueries = () => {
   })
 
   // Generate CV report mutation
-  const generateCVReport = useMutation<{ reportUrl: string; fileName: string }, Error, string>({
+  const generateCVReport = useMutation<ReportResponse, Error, string>({
     mutationFn: CVService.generateCVReport,
     onError: (error) => {
       console.error('CV report generation failed:', error)

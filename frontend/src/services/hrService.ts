@@ -6,10 +6,11 @@ import {
   type StartInterviewResponse,
   type ProcessAudioRequest,
   type ProcessAudioResponse,
-  type Candidate,
-  type InterviewSession,
   type CandidateListResponse,
   type InterviewListResponse,
+  type CVAnalysisResponse,
+  type InterviewResultsResponse,
+  type ReportResponse,
 } from '../types';
 
 export class CVService {
@@ -26,7 +27,7 @@ export class CVService {
     });
   }
 
-  static async getAnalysis(candidateId: string): Promise<{ candidate: Candidate }> {
+  static async getAnalysis(candidateId: string): Promise<CVAnalysisResponse> {
     return api.get(`/cv/analysis/${candidateId}`);
   }
 
@@ -42,7 +43,7 @@ export class CVService {
     return api.patch(`/cv/candidate/${candidateId}/status`, { status });
   }
 
-  static async generateCVReport(candidateId: string): Promise<{ reportUrl: string; fileName: string }> {
+  static async generateCVReport(candidateId: string): Promise<ReportResponse> {
     return api.get(`/cv/report/${candidateId}`);
   }
 }
@@ -67,11 +68,11 @@ export class InterviewService {
     });
   }
 
-  static async getResults(sessionId: string): Promise<InterviewSession> {
+  static async getResults(sessionId: string): Promise<InterviewResultsResponse> {
     return api.get(`/interview/results/${sessionId}`);
   }
 
-  static async generateReport(sessionId: string): Promise<{ reportUrl: string; fileName: string }> {
+  static async generateReport(sessionId: string): Promise<ReportResponse> {
     return api.get(`/interview/report/${sessionId}`);
   }
 

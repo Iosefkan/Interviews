@@ -6,6 +6,12 @@ export interface ApiResponse<T = any> {
   message?: string;
 }
 
+// Base API response that all backend responses extend
+export interface BaseApiResponse {
+  success: boolean;
+  error?: string;
+}
+
 // Candidate types
 export interface PersonalInfo {
   name: string;
@@ -101,7 +107,7 @@ export interface InterviewSession {
   _id: string;
   candidateId: string;
   sessionType: 'technical' | 'behavioral' | 'mixed';
-  status: 'active' | 'completed' | 'terminated' | 'error' | 'pending';
+  status: 'active' | 'completed' | 'terminated' | 'error';
   transcript: InterviewMessage[];
   evaluation?: InterviewEvaluation;
   startTime: Date;
@@ -122,7 +128,7 @@ export interface CVUploadRequest {
   jobTitle: string;
 }
 
-export interface CVUploadResponse {
+export interface CVUploadResponse extends BaseApiResponse {
   candidateId: string;
   qualified: boolean;
   qualificationScore: number;
@@ -138,7 +144,7 @@ export interface StartInterviewRequest {
   interviewType?: 'technical' | 'behavioral' | 'mixed';
 }
 
-export interface StartInterviewResponse {
+export interface StartInterviewResponse extends BaseApiResponse {
   sessionId: string;
   interviewQuestions: InterviewQuestion[];
   estimatedDuration: number;
@@ -159,7 +165,7 @@ export interface ProcessAudioRequest {
   questionId?: string;
 }
 
-export interface ProcessAudioResponse {
+export interface ProcessAudioResponse extends BaseApiResponse {
   transcription: string;
   confidence: number;
   aiResponse: string;
@@ -181,6 +187,42 @@ export interface DashboardStats {
   averageScore: number;
 }
 
+// CV Analysis Response (matches backend /cv/analysis/:candidateId)
+export interface CVAnalysisResponse extends BaseApiResponse {
+  candidateId: string;
+  personalInfo: PersonalInfo;
+  jobInfo: JobInfo;
+  analysisResults: CVAnalysis;
+  status: string;
+  timestamp: Date;
+}
+
+// Interview Results Response (matches backend /interview/results/:sessionId)
+export interface InterviewResultsResponse extends BaseApiResponse {
+  sessionId: string;
+  candidate: Candidate;
+  status: string;
+  duration?: number;
+  overallScore: number;
+  skillsAssessment: {
+    technical: SkillAssessment[];
+    soft: SkillAssessment[];
+    communication: number;
+  };
+  recommendations: string;
+  transcript: InterviewMessage[];
+  evaluation?: InterviewEvaluation;
+  startTime: Date;
+  endTime?: Date;
+}
+
+// Report Response (for both CV and Interview reports)
+export interface ReportResponse extends BaseApiResponse {
+  reportUrl: string;
+  fileName: string;
+  generatedAt?: Date;
+}
+
 export interface PaginationInfo {
   page: number;
   limit: number;
@@ -188,15 +230,12 @@ export interface PaginationInfo {
   pages: number;
 }
 
-export interface CandidateListResponse {
+export interface CandidateListResponse extends BaseApiResponse {
   candidates: Candidate[];
   pagination: PaginationInfo;
-  total: number;
-  items: Candidate[];
 }
 
-export interface InterviewListResponse {
+export interface InterviewListResponse extends BaseApiResponse {
   sessions: InterviewSession[];
   pagination: PaginationInfo;
-  items: InterviewSession[];
 }
