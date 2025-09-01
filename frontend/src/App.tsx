@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { Box } from '@mui/material';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { queryClient } from './lib/queryClient';
 
 // Components
 import Navbar from './components/Navbar';
@@ -12,36 +12,13 @@ import Interview from './pages/Interview';
 import Dashboard from './pages/Dashboard';
 import Results from './pages/Results';
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#667eea',
-    },
-    secondary: {
-      main: '#764ba2',
-    },
-    background: {
-      default: '#f5f5f5',
-    },
-  },
-  typography: {
-    h4: {
-      fontWeight: 600,
-    },
-    h5: {
-      fontWeight: 500,
-    },
-  },
-});
-
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <QueryClientProvider client={queryClient}>
       <Router>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <div className="flex flex-col min-h-screen bg-gray-50">
           <Navbar />
-          <Box component="main" sx={{ flexGrow: 1, pt: 3 }}>
+          <main className="flex-grow pt-3">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/upload" element={<CVUpload />} />
@@ -49,10 +26,11 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/results/:sessionId" element={<Results />} />
             </Routes>
-          </Box>
-        </Box>
+          </main>
+        </div>
       </Router>
-    </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

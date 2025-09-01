@@ -1,15 +1,15 @@
 import api from './api';
 import {
-  CVUploadRequest,
-  CVUploadResponse,
-  StartInterviewRequest,
-  StartInterviewResponse,
-  ProcessAudioRequest,
-  ProcessAudioResponse,
-  Candidate,
-  InterviewSession,
-  CandidateListResponse,
-  InterviewListResponse,
+  type CVUploadRequest,
+  type CVUploadResponse,
+  type StartInterviewRequest,
+  type StartInterviewResponse,
+  type ProcessAudioRequest,
+  type ProcessAudioResponse,
+  type Candidate,
+  type InterviewSession,
+  type CandidateListResponse,
+  type InterviewListResponse,
 } from '../types';
 
 export class CVService {

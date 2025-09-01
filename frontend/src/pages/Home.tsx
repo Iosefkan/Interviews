@@ -1,49 +1,37 @@
 import React from 'react';
-import {
-  Container,
-  Typography,
-  Button,
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/Button';
+import { Card, CardContent } from '../components/ui/Card';
 import {
-  Upload,
-  Psychology,
-  Assessment,
-  PictureAsPdf,
-  CheckCircle,
-  Speed,
-  SmartToy,
-} from '@mui/icons-material';
+  ArrowUpOnSquareIcon,
+  CpuChipIcon,
+  ChartBarIcon,
+  DocumentIcon,
+  CheckCircleIcon,
+  BoltIcon,
+} from '@heroicons/react/24/outline';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
   const features = [
     {
-      icon: <Upload />,
+      icon: ArrowUpOnSquareIcon,
       title: 'CV Upload & Analysis',
       description: 'Upload candidate CVs and get AI-powered qualification assessment',
     },
     {
-      icon: <Psychology />,
+      icon: CpuChipIcon,
       title: 'AI Interviews',
       description: 'Conduct interactive interviews with voice-to-voice AI communication',
     },
     {
-      icon: <Assessment />,
+      icon: ChartBarIcon,
       title: 'Skills Verification',
       description: 'Verify technical and soft skills through dynamic questioning',
     },
     {
-      icon: <PictureAsPdf />,
+      icon: DocumentIcon,
       title: 'PDF Reports',
       description: 'Generate comprehensive interview reports with detailed assessments',
     },
@@ -59,140 +47,129 @@ const Home: React.FC = () => {
   ];
 
   return (
-    <Container maxWidth="lg">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Hero Section */}
-      <Box sx={{ textAlign: 'center', py: 8 }}>
-        <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+      <div className="text-center py-16">
+        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
           AI CV Screening & Interview System
-        </Typography>
-        <Typography variant="h5" component="h2" color="text.secondary" gutterBottom sx={{ mb: 4 }}>
+        </h1>
+        <h2 className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto">
           Revolutionize your recruitment process with AI-powered CV analysis and interactive interviews
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+        </h2>
+        <div className="flex gap-4 justify-center flex-wrap">
           <Button
-            variant="contained"
-            size="large"
+            size="lg"
             onClick={() => navigate('/upload')}
-            startIcon={<Upload />}
-            sx={{ px: 4, py: 1.5, fontSize: '1.1rem' }}
+            className="px-8 py-3 text-lg"
           >
+            <ArrowUpOnSquareIcon className="mr-2 h-5 w-5" />
             Upload CV
           </Button>
           <Button
-            variant="outlined"
-            size="large"
+            variant="outline"
+            size="lg"
             onClick={() => navigate('/dashboard')}
-            startIcon={<Assessment />}
-            sx={{ px: 4, py: 1.5, fontSize: '1.1rem' }}
+            className="px-8 py-3 text-lg"
           >
+            <ChartBarIcon className="mr-2 h-5 w-5" />
             View Dashboard
           </Button>
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Features Section */}
-      <Box sx={{ py: 6 }}>
-        <Typography variant="h4" component="h2" textAlign="center" gutterBottom sx={{ mb: 4 }}>
+      <div className="py-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
           Key Features
-        </Typography>
-        <Grid container spacing={4}>
-          {features.map((feature, index) => (
-            <Grid item xs={12} md={6} key={index}>
-              <Card sx={{ height: '100%', transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-4px)' } }}>
-                <CardContent sx={{ p: 3 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <Box sx={{ color: 'primary.main', mr: 2 }}>
-                      {feature.icon}
-                    </Box>
-                    <Typography variant="h6" component="h3">
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <Card key={index} className="h-full transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent>
+                  <div className="flex items-center mb-4">
+                    <Icon className="h-8 w-8 text-primary-500 mr-3" />
+                    <h3 className="text-xl font-semibold text-gray-900">
                       {feature.title}
-                    </Typography>
-                  </Box>
-                  <Typography color="text.secondary">
+                    </h3>
+                  </div>
+                  <p className="text-gray-600">
                     {feature.description}
-                  </Typography>
+                  </p>
                 </CardContent>
               </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Benefits Section */}
-      <Box sx={{ py: 6 }}>
-        <Grid container spacing={6} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" component="h2" gutterBottom>
+      <div className="py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
               Why Choose Our System?
-            </Typography>
-            <Typography variant="body1" color="text.secondary" paragraph>
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
               Our AI-powered recruitment system streamlines the entire hiring process from CV screening 
               to final interview assessment, saving you time and ensuring consistent, unbiased evaluations.
-            </Typography>
-            <List>
+            </p>
+            <ul className="space-y-4">
               {benefits.map((benefit, index) => (
-                <ListItem key={index} sx={{ px: 0 }}>
-                  <ListItemIcon>
-                    <CheckCircle color="primary" />
-                  </ListItemIcon>
-                  <ListItemText primary={benefit} />
-                </ListItem>
+                <li key={index} className="flex items-start">
+                  <CheckCircleIcon className="h-6 w-6 text-primary-500 mr-3 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{benefit}</span>
+                </li>
               ))}
-            </List>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Card sx={{ p: 4, textAlign: 'center', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
-              <SmartToy sx={{ fontSize: 80, color: 'primary.main', mb: 2 }} />
-              <Typography variant="h5" component="h3" gutterBottom>
+            </ul>
+          </div>
+          <div>
+            <Card className="p-8 text-center bg-gradient-to-br from-gray-50 to-gray-100">
+              <CpuChipIcon className="h-20 w-20 text-primary-500 mx-auto mb-6" />
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
                 Powered by Advanced AI
-              </Typography>
-              <Typography color="text.secondary" paragraph>
+              </h3>
+              <p className="text-gray-600 mb-8">
                 Utilizing OpenRouter AI models, XTTSv2 for speech synthesis, and OpenAI Whisper for 
                 speech recognition to deliver the most accurate and natural interview experience.
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-around', mt: 3 }}>
-                <Box>
-                  <Speed sx={{ fontSize: 40, color: 'primary.main' }} />
-                  <Typography variant="body2" sx={{ mt: 1 }}>Fast Processing</Typography>
-                </Box>
-                <Box>
-                  <Assessment sx={{ fontSize: 40, color: 'primary.main' }} />
-                  <Typography variant="body2" sx={{ mt: 1 }}>Accurate Assessment</Typography>
-                </Box>
-                <Box>
-                  <Psychology sx={{ fontSize: 40, color: 'primary.main' }} />
-                  <Typography variant="body2" sx={{ mt: 1 }}>AI Intelligence</Typography>
-                </Box>
-              </Box>
+              </p>
+              <div className="flex justify-around">
+                <div className="text-center">
+                  <BoltIcon className="h-10 w-10 text-primary-500 mx-auto mb-2" />
+                  <p className="text-sm text-gray-700">Fast Processing</p>
+                </div>
+                <div className="text-center">
+                  <ChartBarIcon className="h-10 w-10 text-primary-500 mx-auto mb-2" />
+                  <p className="text-sm text-gray-700">Accurate Assessment</p>
+                </div>
+                <div className="text-center">
+                  <CpuChipIcon className="h-10 w-10 text-primary-500 mx-auto mb-2" />
+                  <p className="text-sm text-gray-700">AI Intelligence</p>
+                </div>
+              </div>
             </Card>
-          </Grid>
-        </Grid>
-      </Box>
+          </div>
+        </div>
+      </div>
 
       {/* CTA Section */}
-      <Box sx={{ py: 6, textAlign: 'center', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', borderRadius: 2, my: 4 }}>
-        <Typography variant="h4" component="h2" gutterBottom>
+      <div className="py-16 text-center bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-2xl my-16">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
           Ready to Transform Your Recruitment?
-        </Typography>
-        <Typography variant="h6" component="p" sx={{ mb: 3, opacity: 0.9 }}>
+        </h2>
+        <p className="text-xl mb-8 opacity-90">
           Start screening candidates with AI-powered interviews today
-        </Typography>
+        </p>
         <Button
-          variant="contained"
-          size="large"
+          size="lg"
           onClick={() => navigate('/upload')}
-          sx={{ 
-            backgroundColor: 'white', 
-            color: 'primary.main', 
-            px: 4, 
-            py: 1.5,
-            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' }
-          }}
+          className="bg-white text-primary-500 hover:bg-gray-100 px-8 py-3 text-lg"
         >
           Get Started Now
         </Button>
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 };
 
