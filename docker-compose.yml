@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: hr-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: hr_system
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./backend/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - hr-network
+
+  # Backend Service (Node.js + Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hr-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/hr_system?authSource=admin
+      TTS_SERVICE_URL: http://tts-service:8001
+      STT_SERVICE_URL: http://stt-service:8002
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/reports:/app/reports
+    depends_on:
+      - mongodb
+      - tts-service
+      - stt-service
+    networks:
+      - hr-network
+
+  # TTS Service (Python + FastAPI + XTTSv2)
+  tts-service:
+    build:
+      context: ./tts-service
+      dockerfile: Dockerfile
+    container_name: hr-tts
+    restart: unless-stopped
+    environment:
+      PYTHONPATH: /app
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./tts-service/audio:/app/audio
+      - ./tts-service/models:/app/models
+    networks:
+      - hr-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # STT Service (Python + FastAPI + Whisper)
+  stt-service:
+    build:
+      context: ./stt-service
+      dockerfile: Dockerfile
+    container_name: hr-stt
+    restart: unless-stopped
+    environment:
+      PYTHONPATH: /app
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./stt-service/temp:/app/temp
+      - ./stt-service/models:/app/models
+    networks:
+      - hr-network
+
+  # Frontend (Vite + React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:3000
+    container_name: hr-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - hr-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  hr-network:
+    driver: bridge
