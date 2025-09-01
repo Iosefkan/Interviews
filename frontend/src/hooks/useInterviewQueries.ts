@@ -44,9 +44,9 @@ export const useInterviewQueries = () => {
       queryKey: queryKeys.interview(sessionId!),
       queryFn: () => InterviewService.getResults(sessionId!),
       enabled: !!sessionId,
-      refetchInterval: (data) => {
+      refetchInterval: (query) => {
         // Poll every 5 seconds if interview is active
-        return data?.status === 'active' ? 5000 : false
+        return query?.state?.data?.status === 'active' ? 5000 : false
       }
     })
   }

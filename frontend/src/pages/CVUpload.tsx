@@ -13,7 +13,7 @@ import {
   CloudArrowUpIcon, 
   DocumentIcon, 
   CheckCircleIcon,
-  CpuChipIcon
+  CpuChipIcon as BrainIcon
 } from '@heroicons/react/24/outline';
 
 const CVUpload: React.FC = () => {

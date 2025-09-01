@@ -101,7 +101,7 @@ export interface InterviewSession {
   _id: string;
   candidateId: string;
   sessionType: 'technical' | 'behavioral' | 'mixed';
-  status: 'active' | 'completed' | 'terminated' | 'error';
+  status: 'active' | 'completed' | 'terminated' | 'error' | 'pending';
   transcript: InterviewMessage[];
   evaluation?: InterviewEvaluation;
   startTime: Date;
@@ -109,6 +109,10 @@ export interface InterviewSession {
   duration?: number;
   questionsGenerated: string[];
   currentQuestionIndex: number;
+  createdAt: Date;
+  completedAt?: Date;
+  questions?: Array<{question: string; answer?: string; score?: number;}>;
+  overallScore?: number;
 }
 
 // Upload types
@@ -187,9 +191,12 @@ export interface PaginationInfo {
 export interface CandidateListResponse {
   candidates: Candidate[];
   pagination: PaginationInfo;
+  total: number;
+  items: Candidate[];
 }
 
 export interface InterviewListResponse {
   sessions: InterviewSession[];
   pagination: PaginationInfo;
+  items: InterviewSession[];
 }

@@ -3,8 +3,9 @@ import { useCVQueries } from '../hooks/useCVQueries';
 import { useInterviewQueries } from '../hooks/useInterviewQueries';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Chip } from '../components/ui/Chip';
-import { TableSkeleton, CardSkeleton } from '../components/ui/LoadingStates';
+import { TableSkeleton } from '../components/ui/LoadingStates';
 import { Alert, AlertDescription } from '../components/ui/Alert';
+import type { Candidate, InterviewSession } from '../types';
 import { 
   UserGroupIcon, 
   MicrophoneIcon, 
@@ -29,21 +30,21 @@ const Dashboard: React.FC = () => {
     },
     {
       title: 'Active Interviews',
-      value: interviewsQuery.data?.items?.filter(i => i.status === 'active').length || 0,
+      value: interviewsQuery.data?.items?.filter((i: InterviewSession) => i.status === 'active').length || 0,
       icon: MicrophoneIcon,
       color: 'text-green-600',
       bgColor: 'bg-green-100'
     },
     {
       title: 'Completed Interviews',
-      value: interviewsQuery.data?.items?.filter(i => i.status === 'completed').length || 0,
+      value: interviewsQuery.data?.items?.filter((i: InterviewSession) => i.status === 'completed').length || 0,
       icon: CheckCircleIcon,
       color: 'text-purple-600',
       bgColor: 'bg-purple-100'
     },
     {
       title: 'Pending Reviews',
-      value: interviewsQuery.data?.items?.filter(i => i.status === 'pending').length || 0,
+      value: interviewsQuery.data?.items?.filter((i: InterviewSession) => i.status === 'pending').length || 0,
       icon: ClockIcon,
       color: 'text-orange-600',
       bgColor: 'bg-orange-100'
@@ -107,17 +108,17 @@ const Dashboard: React.FC = () => {
               <TableSkeleton rows={3} />
             ) : candidatesQuery.data?.items?.length ? (
               <div className="space-y-3">
-                {candidatesQuery.data.items.slice(0, 5).map((candidate) => (
+                {candidatesQuery.data.items.slice(0, 5).map((candidate: Candidate) => (
                   <div key={candidate._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900">{candidate.name}</p>
-                      <p className="text-sm text-gray-600">{candidate.email}</p>
+                      <p className="font-medium text-gray-900">{candidate.personalInfo.name}</p>
+                      <p className="text-sm text-gray-600">{candidate.personalInfo.email}</p>
                     </div>
                     <Chip
-                      variant={candidate.qualified ? 'success' : 'error'}
+                      variant={candidate.analysis.qualified ? 'success' : 'error'}
                       size="sm"
                     >
-                      {candidate.qualified ? 'Qualified' : 'Not Qualified'}
+                      {candidate.analysis.qualified ? 'Qualified' : 'Not Qualified'}
                     </Chip>
                   </div>
                 ))}
@@ -138,7 +139,7 @@ const Dashboard: React.FC = () => {
               <TableSkeleton rows={3} />
             ) : interviewsQuery.data?.items?.length ? (
               <div className="space-y-3">
-                {interviewsQuery.data.items.slice(0, 5).map((interview) => (
+                {interviewsQuery.data.items.slice(0, 5).map((interview: InterviewSession) => (
                   <div key={interview._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="font-medium text-gray-900">{interview.candidateId}</p>

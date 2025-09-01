@@ -44,14 +44,19 @@ export const useCVQueries = () => {
   }
 
   // Update candidate status mutation
-  const updateCandidateStatus = useMutation<void, Error, { candidateId: string; status: string }>({
+  const updateCandidateStatus = useMutation<
+    void, 
+    Error, 
+    { candidateId: string; status: string },
+    { previousCandidates: CandidateListResponse | undefined }
+  >({
     mutationFn: ({ candidateId, status }) => CVService.updateCandidateStatus(candidateId, status),
     onMutate: async ({ candidateId, status }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: queryKeys.candidates() })
       
       // Snapshot previous value
-      const previousCandidates = queryClient.getQueryData(queryKeys.candidates())
+      const previousCandidates = queryClient.getQueryData(queryKeys.candidates()) as CandidateListResponse | undefined
       
       // Optimistically update
       queryClient.setQueryData(queryKeys.candidates(), (old: any) => {
@@ -68,7 +73,7 @@ export const useCVQueries = () => {
       
       return { previousCandidates }
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       // Rollback on error
       if (context?.previousCandidates) {
         queryClient.setQueryData(queryKeys.candidates(), context.previousCandidates)

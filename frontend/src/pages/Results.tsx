@@ -197,7 +197,7 @@ const Results: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 {session.questions?.length ? (
-                  session.questions.map((qa, index) => (
+                  session.questions.map((qa: {question: string; answer?: string; score?: number;}, index: number) => (
                     <div key={index} className="border-l-4 border-primary-500 pl-4 py-2">
                       <p className="font-medium text-gray-900 mb-2">
                         Q{index + 1}: {qa.question}
