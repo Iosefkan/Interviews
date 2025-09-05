@@ -216,7 +216,7 @@ const CVUpload: React.FC = () => {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Experience
+                    Experience Summary
                   </h3>
                   <div className="space-y-1 text-sm text-gray-700">
                     <p>Total Years: {result.experience.totalYears}</p>
@@ -226,6 +226,95 @@ const CVUpload: React.FC = () => {
                 </div>
               </div>
               
+              {/* Work Experience Details */}
+              {result.experience.positions && result.experience.positions.length > 0 && (
+                <div className="bg-green-50 rounded-lg p-4 mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Work Experience
+                  </h3>
+                  <div className="space-y-4">
+                    {result.experience.positions.map((position, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-green-100">
+                        <div className="mb-3">
+                          <h4 className="text-lg font-semibold text-gray-900">{position.position}</h4>
+                          <p className="text-primary-600 font-medium">{position.company}</p>
+                          <p className="text-sm text-gray-600">{position.duration}</p>
+                        </div>
+                        
+                        {position.technologies && position.technologies.length > 0 && (
+                          <div className="mb-3">
+                            <p className="text-sm font-medium text-gray-600 mb-2">Technologies</p>
+                            <div className="flex flex-wrap gap-1">
+                              {position.technologies.map((tech, techIndex) => (
+                                <Chip key={techIndex} variant="secondary" size="sm">
+                                  {tech}
+                                </Chip>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {position.responsibilities && position.responsibilities.length > 0 && (
+                          <div>
+                            <p className="text-sm font-medium text-gray-600 mb-2">Key Responsibilities</p>
+                            <ul className="text-sm text-gray-700 space-y-1">
+                              {position.responsibilities.slice(0, 3).map((responsibility, respIndex) => (
+                                <li key={respIndex} className="flex items-start">
+                                  <span className="text-green-500 mr-2 mt-1">•</span>
+                                  {responsibility}
+                                </li>
+                              ))}
+                              {position.responsibilities.length > 3 && (
+                                <li className="text-gray-500 italic text-xs">
+                                  ... and {position.responsibilities.length - 3} more
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Education Details */}
+              {result.experience.education && result.experience.education.length > 0 && (
+                <div className="bg-blue-50 rounded-lg p-4 mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Education Background
+                  </h3>
+                  <div className="space-y-4">
+                    {result.experience.education.map((edu, index) => (
+                      <div key={index} className="bg-white rounded-lg p-4 border border-blue-100">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Degree</p>
+                            <p className="text-gray-900 font-semibold">{edu.degree}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-600">Institution</p>
+                            <p className="text-gray-900">{edu.institution}</p>
+                          </div>
+                          {edu.year && (
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">Year</p>
+                              <p className="text-gray-900">{edu.year}</p>
+                            </div>
+                          )}
+                          {edu.grade && (
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">Grade</p>
+                              <p className="text-gray-900">{edu.grade}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
                   AI Analysis Notes
